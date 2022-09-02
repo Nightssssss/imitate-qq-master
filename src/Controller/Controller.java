@@ -21,6 +21,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
@@ -223,21 +224,22 @@ public class Controller {
      */
     public void getRegisterCode(){
         ((Button) $(register,"code")).setOnAction(event -> {
-            String phone = ((TextField) $(register,"phone")).getText();
-            try{
-                String phoneRegExp = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
-                if (!phone.equals("") && Pattern.matches(phoneRegExp,phone)){
-                    codeRegister = new GetMessageCode().getCode(phone);
-                    if (!codeRegister.equals("")){
-                        register.setErrorTip("codeError","验证码发送成功");
-                    }else {
-                        register.setErrorTip("codeError","验证码发送失败，请检查网络");
-                    }
-                }else {
-                    alert.setText("未输入手机号或手机号非法，无法获取验证码");
-                    alert.exec();
-                }
-            }catch (Exception e){
+            String mail = ((TextField) $(register,"phone")).getText();
+            SendEmail sendEmail=new SendEmail();
+            //设置要发送的邮箱
+            sendEmail.setReceiveMailAccount(mail);
+            //创建6位发验证码
+            Random random=new Random();
+            String str="";
+            for(int i=0;i<6;i++) {
+                int n=random.nextInt(10);
+                str+=n;
+            }
+            sendEmail.setInfo(str);
+            this.codeRegister = str;
+            try {
+                sendEmail.Send();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -249,21 +251,22 @@ public class Controller {
      */
     public void getForgetCode(){
         ((Button) $(forget,"code")).setOnAction(event -> {
-            String phone = ((TextField) $(forget,"phone")).getText();
-            try{
-                String phoneRegExp = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
-                if (!phone.equals("") && Pattern.matches(phoneRegExp,phone)){
-                    codeForget = new GetMessageCode().getCode(phone);
-                    if (!codeForget.equals("")){
-                        forget.setErrorTip("phoneError","验证码发送成功");
-                    }else {
-                        forget.setErrorTip("phoneError","验证码发送失败，请检查网络");
-                    }
-                }else {
-                    alert.setText("未输入手机号或手机号非法，无法获取验证码");
-                    alert.exec();
-                }
-            }catch (Exception e){
+            String mail = ((TextField) $(forget,"phone")).getText();
+            SendEmail sendEmail=new SendEmail();
+            //设置要发送的邮箱
+            sendEmail.setReceiveMailAccount(mail);
+            //创建6位发验证码
+            Random random=new Random();
+            String str="";
+            for(int i=0;i<6;i++) {
+                int n=random.nextInt(10);
+                str+=n;
+            }
+            sendEmail.setInfo(str);
+            this.codeRegister = str;
+            try {
+                sendEmail.Send();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
