@@ -120,7 +120,7 @@
 
 }
 #background{
-    -fx-background-image: url("Image/background2.jpg");
+    -fx-background-image: url("Image/background/background9.jpg");
     -fx-background-repeat: no-repeat;
     -fx-background-size: 620px 420px;
 }

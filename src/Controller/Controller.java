@@ -46,15 +46,10 @@ public class Controller {
     public static chat ch;
     public static cacuAge CAGE;
     public static Database database;
-
-
-    //构造函数
     public Controller() throws IOException {
-    //初始化对话框
         dialog = new Dialog();
         dialogExec();
         dialog.show();
-
         register = new Register();
         headPorTrait = new HeadPorTrait();
         forget = new Forget();
@@ -67,15 +62,12 @@ public class Controller {
         ch = new chat();
         CAGE =new cacuAge();
         alert = new Alert();
-
         messageData.msg = new Vector<>();
         messageData.msgTip = new HashMap<>();
         messageData.account = new Vector<>();
         database.connect();
         /*如果有记住密码的就把他读到文本框上*/
-
         try{
-
             ResultSet ret = database.execResult("select * from save_pass");
             if(ret.next()){
                 ResultSet ret1 = database.execResult("select * from dialog");
@@ -104,8 +96,6 @@ public class Controller {
         }catch (SQLException e){
             e.printStackTrace();
         }
-
-
     }
     /**
      * 设置头像
@@ -292,14 +282,12 @@ public class Controller {
             String code = ((TextField) $(register,"codeText")).getText();
             String sex;
             RadioButton radioButton = ((RadioButton) $(register,"man"));
-
             String accountRegExp = "^[0-9,a-z,A-Z,\\u4e00-\\u9fa5]{1,15}$";  //正则匹配：只能输入汉字，数字，字母，长度1-15
             String nameRegExp = "^[a-z,A-Z,\\u4e00-\\u9fa5]{1,100}$";  //正则匹配：只能输入汉字，字母，长度1-100
-            String phoneRegExp = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$"; //正则匹配：只能是正常的电话号码
+            String phoneRegExp ="";
             String passwordRegExp = "^[a-z,A-Z,0-9]{6,20}$";  //6-20位的数字或者字母
             String rePasswordRegExp = "^[a-z,A-Z,0-9]{6,20}$";  //6-20位的数字或者字母
-
-            if(nickname.equals("") || password.equals("") || name.equals("") || rePassword.equals("") || birthday.equals("") || phone.equals("") || code.equals("")){
+            if(nickname.equals("") || password.equals("") || name.equals("") || rePassword.equals("") || birthday.equals("")  || code.equals("")){
                 if(nickname.equals("")){
                     register.setErrorTip("accountError","昵称不能为空！");
                 }if(password.equals("")){
@@ -310,13 +298,13 @@ public class Controller {
                     register.setErrorTip("nameError","姓名不能为空！");
                 }if(birthday.equals("")){
                     register.setErrorTip("birthError","生日不能为空！");
-                }if(phone.equals("")){
-                    register.setErrorTip("phoneError","电话号码不能为空！");
-                }if(code.equals("")){
-                    register.setErrorTip("phoneError","验证码不能为空！");
-                }
+                }//if(phone.equals("")){
+                //register.setErrorTip("phoneError","电话号码不能为空！");
+                //}if(code.equals("")){
+                //register.setErrorTip("phoneError","验证码不能为空！");
+                //}
             }
-            else if(!Pattern.matches(accountRegExp,nickname) || !Pattern.matches(passwordRegExp,password) || !Pattern.matches(rePasswordRegExp,rePassword) || !Pattern.matches(nameRegExp,name) || !Pattern.matches(phoneRegExp,phone)){
+            else if(!Pattern.matches(accountRegExp,nickname) || !Pattern.matches(passwordRegExp,password) || !Pattern.matches(rePasswordRegExp,rePassword) || !Pattern.matches(nameRegExp,name) ){
                 if(!Pattern.matches(accountRegExp,nickname)){
                     register.setErrorTip("accountError","只能输入长度1-15的汉字，数字，字母");
                 }if(!Pattern.matches(nameRegExp,name)){
@@ -325,14 +313,12 @@ public class Controller {
                     register.setErrorTip("passwordError","只能输入长度6-20的数字，字母");
                 }if(!Pattern.matches(rePasswordRegExp,rePassword)){
                     register.setErrorTip("rePasswordError","只能输入长度6-20的数字，字母");
-                }if(!Pattern.matches(phoneRegExp,phone)){
-                    register.setErrorTip("phoneError","电话号码格式不合法");
-                }
-            }
-            /*else if(!code.equals(codeRegister)){
-                register.setErrorTip("codeError","验证码输入错误");
-            }*/
-
+                }//if(!Pattern.matches(phoneRegExp,phone)){
+                // register.setErrorTip("phoneError","电话号码格式不合法");
+                //}
+            }//else if(!code.equals(codeRegister)){
+            //register.setErrorTip("codeError","验证码输入错误");
+            //}
             else {
                 String account = (int) ((Math.random() * 9 + 1) * 10000000) + "";
                 try {
@@ -344,9 +330,6 @@ public class Controller {
                             }else {
                                 sex = "woman";
                             }
-                            database.exec("insert into user values(?,?,?,?,?,?,?,?,?,?,?)",account,nickname,name,password,birthday,sex,userdata.getHead(),"湖南省长沙市","",phone,"background6");
-                            database.exec("insert into the_group values(?,?)",account,"我的好友");
-                            database.exec("insert into the_group values(?,?)",account,"家人");
                             register.close();
                             register.clear();
                             alert.setText("注册成功，你的账号是" + account);
@@ -434,17 +417,17 @@ public class Controller {
                                 ResultSet resultSet1 = database.execResult("select * from companion where I_account = ?",userdata.getAccount());
                                 while (resultSet1.next()){
                                     ResultSet resultSet2 = database.execResult("select * from user where account = ?",resultSet1.getString("Y_account"));
-                                   if(resultSet2.next()){
-                                       try {
-                                           mainwindow.addFriend(resultSet2.getString("account"),resultSet2.getString("head"),resultSet1.getString("remark"),resultSet2.getString("label"),database,friendpage);
-                                           messageData.msg.add(new Vector<>());
-                                           messageData.msgTip.put(resultSet2.getString("account"),0);
-                                           messageData.account.add(resultSet2.getString("account"));
-                                       }catch (IOException e){
-                                           e.printStackTrace();
-                                       }
+                                    if(resultSet2.next()){
+                                        try {
+                                            mainwindow.addFriend(resultSet2.getString("account"),resultSet2.getString("head"),resultSet1.getString("remark"),resultSet2.getString("label"),database,friendpage);
+                                            messageData.msg.add(new Vector<>());
+                                            messageData.msgTip.put(resultSet2.getString("account"),0);
+                                            messageData.account.add(resultSet2.getString("account"));
+                                        }catch (IOException e){
+                                            e.printStackTrace();
+                                        }
 
-                                   }
+                                    }
                                 }
                                 /*聊天助手一直在线*/
                                 mainwindow.getFriendVector().get(0).setOnline();
@@ -559,8 +542,6 @@ public class Controller {
                     forget.setErrorTip("passwordError","只能输入长度6-20的数字，字母");
                 }if(!Pattern.matches(rePasswordRegExp,rePassword)){
                     forget.setErrorTip("rePasswordError","只能输入长度6-20的数字，字母");
-                }if(!Pattern.matches(phoneRegExp,phone)){
-                    forget.setErrorTip("phoneError","电话号码格式不合法");
                 }
             }else if (!code.equals(codeForget)){
                 forget.setErrorTip("phoneError","验证码错误");
@@ -712,12 +693,12 @@ public class Controller {
                         resultSet = Controller.database.execResult("select * from user where account = ?",account);
                         boolean flag = false;
                         if (resultSet.next()){
-                                try {
-                                    addfriend.add(resultSet.getString("head"),resultSet.getString("nickname"),account);
-                                    flag = true;
-                                }catch (IOException e){
-                                    e.printStackTrace();
-                                }
+                            try {
+                                addfriend.add(resultSet.getString("head"),resultSet.getString("nickname"),account);
+                                flag = true;
+                            }catch (IOException e){
+                                e.printStackTrace();
+                            }
                         }
                         if(!flag){
                             alert.setText("没有找到相关结果！" );
@@ -846,4 +827,27 @@ public class Controller {
             headPorTrait.close();
         });
     }
+  //  public void emoji_cliicked(){
+   //     ((Button) $(ch,"emoji")).setOnAction(event -> {
+
+   //     });
+   // }
+
+
+//    public void emojiSelectorBtnAction(ActionEvent event) {
+//        if(!getStage(Main.EmojiSelectorUIID).isShowing()){
+//            //设置emoji选择器的位置
+//            double prex = getLocalStage().getX();
+//            double prey = getLocalStage().getY();
+//            double preheight = getLocalStage().getHeight();
+//            double prewidth = getLocalStage().getWidth();
+//            setStagePos(Main.EmojiSelectorUIID, prex + prewidth/2, prey + preheight/2);
+//            //打开
+//            openStage(Main.EmojiSelectorUIID);
+//        }else {
+//            //关闭
+//            closeStage(Main.EmojiSelectorUIID);
+//        }
+//    }
+
 }

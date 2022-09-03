@@ -9,7 +9,7 @@ import java.util.Properties;
 public class SendEmail {
     //发件人的邮箱和授权码
     private final String myEmailAccount = "708872115@qq.com";//发送的邮箱
-    private final String myEmailPassword = "lzfqwmsxdkjmbdbc";
+    private final String myEmailPassword = "ehspzzmitxtqbbba";
     private String receiveMailAccount = null ;
     private String info=null;
     // 信息内容
@@ -42,6 +42,7 @@ public class SendEmail {
         props.setProperty("mail.smtp.socketFactory.fallback", "false");
         props.setProperty("mail.smtp.socketFactory.port", smtpPort);
 
+        props.put("mail.smtp.starttls.enable", "true");
 
         // 2. 根据配置创建会话对象, 用于和邮件服务器交互
         Session session = Session.getDefaultInstance(props);
